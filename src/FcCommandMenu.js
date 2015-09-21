@@ -183,7 +183,9 @@ define(
          */
         CommandMenuLayer.prototype.createSubLayer = function (element, datasource) {
             var subLayerElement = Layer.create('ul');
-            subLayerElement.className = element.className;
+            subLayerElement.className = element.className
+                + ' '
+                + this.control.helper.getPartClasses('sub-layer').join(' ');
             subLayerElement.innerHTML = getLayerHtml(this.control, datasource);
             document.body.appendChild(subLayerElement);
             return subLayerElement;
@@ -579,7 +581,8 @@ define(
                 paint: function (menu) {
                     if (menu.type === 'FcCommandMenu') {
                         if (menu.layer) {
-                            menu._clickHandler ? menu.helper.removeDOMEvent(menu.main, 'click', menu._clickHandler) : '';
+                            menu._clickHandler
+                                ? menu.helper.removeDOMEvent(menu.main, 'click', menu._clickHandler) : '';
                             menu.layer.dispose();
                         }
                         menu.layer = new CommandMenuLayer(menu);
