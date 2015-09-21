@@ -9,7 +9,7 @@
  */
 
 define(
-    function(require) {
+    function (require) {
         var u = require('underscore');
         var lib = require('./lib');
 
@@ -139,14 +139,6 @@ define(
                 this.initBehavior(element);
                 this.control.helper.addDOMEvent(
                     document, 'mousedown', u.bind(close, this));
-                // 不能点层自己也关掉，所以阻止冒泡到`document`
-                this.control.helper.addDOMEvent(
-                    element,
-                    'mousedown',
-                    function (e) {
-                        e.stopPropagation();
-                    }
-                );
 
                 this.syncState(element);
 
@@ -327,9 +319,7 @@ define(
          * @param {function(Event)} mouseEnterCallback callback
          * @param {function(Event)} mouseLeaveCallback callback
          */
-        Layer.delayHover = function (
-            elements, delay, mouseEnterCallback, mouseLeaveCallback
-        ) {
+        Layer.delayHover = function (elements, delay, mouseEnterCallback, mouseLeaveCallback) {
             var mouseoverTimeout = null;
             var mouseoutTimeout = null;
             var hovering = false;
@@ -366,6 +356,13 @@ define(
                 }, delay);
             };
             u.each(elements, function (ele) {
+                if (ele) {
+                    ele._mouseoverHandler ? lib.un(ele, 'mouseover', ele._mouseoverHandler) : '';
+                    ele._mouseoverHandler ? lib.un(ele, 'mouseout', ele._mouseoutHandler) : '';
+                    ele._mouseoverHandler = mouseoverHandler;
+                    ele._mouseoutHandler = mouseoutHandler;
+                }
+
                 lib.on(ele, 'mouseover', mouseoverHandler);
                 lib.on(ele, 'mouseout', mouseoutHandler);
             });
